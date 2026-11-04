@@ -1,72 +1,35 @@
 # Proyecto Biblioteca
 
-Aplicación de consola en C# para administrar un catálogo básico de libros y usuarios. El proyecto utiliza .NET 10 y guarda los datos localmente en formato JSON.
+Aplicación de consola para administrar un catálogo básico de libros y usuarios, desarrollada con .NET 10.
+
+## Funcionalidades
+
+- **Libros:** consultar el catálogo, ver los libros disponibles y agregar títulos. El catálogo incluye inicialmente «El principio de la eternidad».
+- **Usuarios:** registrar y listar usuarios. La lista inicia con tres usuarios de ejemplo: Juan Pérez, María Gómez y Carlos López.
+- **Búsqueda:** buscar libros por título o por una parte del título, sin distinguir entre mayúsculas y minúsculas.
+- **Préstamos:** consultar el catálogo desde la sección de préstamos.
+- **Persistencia:** guardar libros y usuarios en un archivo JSON ubicado en la carpeta local de datos de la aplicación. La carga aún no está implementada.
+- **Reinicio:** vaciar todos los libros y usuarios después de confirmar la acción.
+- **Salida segura:** confirmar antes de salir del programa.
+- **Menús interactivos:** navegar por las secciones y volver al menú principal; las opciones inválidas y las entradas vacías se informan en pantalla.
+
+## Funcionalidades pendientes
+
+El registro, listado y devolución de préstamos, la consulta de libros prestados y la generación de reportes todavía no están implementados. Los datos guardados no se cargan automáticamente; la opción para cargarlos está pendiente.
+
+Los libros y usuarios agregados se conservan en memoria durante la ejecución. Para conservarlos entre ejecuciones, use **Persistencia > Guardar datos**. Reiniciar los datos vacía las listas en memoria; no elimina el archivo guardado.
 
 ## Requisitos
 
-- Windows
-- SDK de .NET 10
+- SDK de .NET 10.
 
-## Ejecución
+## Compilar y ejecutar
 
-Abre PowerShell o una terminal en la carpeta del proyecto y ejecuta:
+Desde la carpeta del proyecto:
 
-```powershell
-dotnet restore
+```bash
 dotnet build
 dotnet run
 ```
 
-## Funcionalidades
-
-### Libros
-
-- Consultar y buscar títulos por nombre completo o parcial, sin distinguir entre mayúsculas y minúsculas.
-- Agregar libros al catálogo durante la ejecución.
-- El catálogo inicial incluye «El principio de la eternidad».
-
-### Usuarios
-
-- Registrar y listar usuarios.
-- La aplicación inicia con tres usuarios de ejemplo: Juan Pérez, María Gómez y Carlos López.
-
-### Préstamos y reportes
-
-Los menús están disponibles, pero el registro y listado de préstamos, las devoluciones, la consulta de libros prestados y la generación de reportes todavía no están implementados.
-
-### Guardado y carga
-
-- Al elegir **Salir y guardar** en el menú principal, la aplicación pide confirmación y guarda los libros y usuarios en:
-
-  ```text
-  %LOCALAPPDATA%\ProyectoBiblioteca\datos.json
-  ```
-
-- Desde **Persistencia** se pueden cargar los datos del archivo guardado.
-- La opción **Reiniciar datos** vacía los libros y usuarios actuales después de pedir confirmación. Para guardar ese cambio, confirma también la salida desde el menú principal.
-- Cancelar la salida mantiene la aplicación abierta y no guarda los cambios pendientes.
-- Al iniciar, se cargan los datos de ejemplo. Para restaurar un archivo existente, usa **Persistencia → Cargar datos guardados**.
-
-## Navegación
-
-El menú principal da acceso a Libros, Usuarios, Préstamos, Búsquedas y reportes, Persistencia y Salir y guardar. Cada submenú pide confirmación antes de volver al menú principal. Responde `S` o `SI` para confirmar; cualquier otra respuesta cancela la acción.
-
-## Estructura del proyecto
-
-```text
-.
-├── Menus/
-│   ├── MenuBusquedasYReportes.cs
-│   ├── MenuLibros.cs
-│   ├── MenuPersistencia.cs
-│   ├── MenuPrestamos.cs
-│   ├── MenuPrincipal.cs
-│   └── MenuUsuarios.cs
-├── Servicios/
-│   ├── CatalogoLibros.cs
-│   └── DatosBiblioteca.cs
-├── Utilidades/
-│   └── Consola.cs
-├── Program.cs
-└── Proyecto-Bliblotecta.csproj
-```
+El código de la aplicación está en [`Program.cs`](./Program.cs).
