@@ -1,12 +1,19 @@
 # Proyecto Biblioteca
 
-Proyecto de consola creado con .NET 10 como base para desarrollar un sistema de gestión de biblioteca. El repositorio reúne los archivos del proyecto y permite organizar y versionar su evolución.
+Aplicación de consola para gestionar un catálogo de biblioteca. El proyecto utiliza .NET 10.
 
-## Estado actual
+## Descripción del trabajo realizado
 
-- Proyecto ejecutable de .NET 10 (`Proyecto-Bliblotecta.csproj`).
-- Aplicación de consola inicial.
-- Archivo `.gitignore` para excluir carpetas de compilación (`bin/` y `obj/`), archivos locales de Visual Studio y paquetes NuGet.
+Se preparó la estructura inicial de la aplicación y se organizó el código del menú principal y la gestión de libros. El menú permite navegar por las opciones disponibles, valida entradas vacías o no reconocidas y finaliza correctamente al seleccionar «Salir». El submenú de libros permanece abierto después de cada consulta y solo regresa al menú principal cuando se elige esa opción. También se documentaron las funciones que todavía están pendientes.
+
+## Funcionalidad actual
+
+- Menú principal con opciones para libros, usuarios, préstamos, búsquedas y reportes, guardar o cargar datos y salir.
+- Submenú de libros con opciones para consultar el catálogo, consultar libros disponibles, listar libros prestados y volver al menú principal.
+- Después de elegir una opción del submenú de libros, se muestra el resultado y se espera que se presione Enter para continuar en ese submenú.
+- Las opciones de usuarios, préstamos, búsquedas, reportes y almacenamiento todavía no están implementadas.
+
+Las opciones del catálogo muestran actualmente un libro de ejemplo: «El principio de la eternidad».
 
 ## Requisitos
 
@@ -14,13 +21,9 @@ Proyecto de consola creado con .NET 10 como base para desarrollar un sistema de 
 
 ## Compilar y ejecutar
 
-Desde la carpeta del proyecto, ejecuta:
+Desde la carpeta del proyecto:
 
 ```bash
 dotnet build
 dotnet run
 ```
-
-## Repositorio
-
-El repositorio está destinado a mantener el código fuente y los archivos necesarios del proyecto. Los archivos generados localmente durante la compilación se excluyen mediante `.gitignore`.
