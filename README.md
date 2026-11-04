@@ -1,18 +1,16 @@
 # Proyecto Biblioteca
 
-Aplicación de consola para gestionar libros y usuarios, desarrollada con .NET 10.
+Aplicación de consola para administrar un catálogo básico de libros y usuarios, desarrollada con .NET 10.
 
-## Trabajo realizado
+## Funcionalidad
 
-- Se creó un menú principal para acceder a las secciones y salir del programa.
-- Se agregó un submenú de libros que permanece abierto después de cada consulta hasta elegir «Volver al menú principal».
-- Se agregó un submenú de usuarios para registrar nombres y mostrar una lista inicial de ejemplo.
-- Se validan las opciones del menú y los nombres vacíos.
-- El código de la aplicación está en `Program.cs`, organizado en las clases `Program`, `Menu`, `Books` y `Users`.
+- **Menú principal:** permite acceder a las secciones de libros, usuarios y préstamos, además de mostrar las opciones aún pendientes y salir.
+- **Libros:** permite consultar el catálogo, agregar títulos y ver los libros desde el menú de préstamos. El catálogo parte con «El principio de la eternidad».
+- **Usuarios:** permite registrar nombres y listar usuarios, incluidos tres registros de ejemplo.
+- **Préstamos:** permite consultar el catálogo compartido. El registro y listado de préstamos y devoluciones todavía no están implementados.
+- Los submenús permanecen abiertos hasta elegir la opción para volver al menú principal. Se validan las opciones y se rechazan títulos o nombres vacíos.
 
-## Estado actual
-
-Las consultas del submenú de libros muestran el mismo libro de ejemplo. Los usuarios nuevos se guardan en memoria mientras se usa el submenú; todavía no se almacenan al cerrar la aplicación. Las funciones de préstamos, búsquedas, reportes y guardar o cargar datos están pendientes.
+Los libros y usuarios se guardan en memoria durante la ejecución; los cambios se pierden al cerrar la aplicación. La persistencia, las búsquedas y los reportes están pendientes. El código se encuentra en `Program.cs`, organizado en las clases `Program`, `Menu`, `Books`, `CatalogoLibros`, `Users` y `Loans`.
 
 ## Requisitos
 
