@@ -51,7 +51,7 @@ public class Menu
                 new Books().MostrarLibros();
                 return true;
             case "2":
-                Console.WriteLine("Funcionalidad de usuarios registrados aún no implementada.");
+                new Users().MostrarUsuarios();
                 return true;
             case "3":
                 Console.WriteLine("Funcionalidad de préstamos aún no implementada.");
@@ -117,6 +117,72 @@ public class Books
             }
 
             Console.WriteLine("\nPresione Enter para volver al menú de libros.");
+            Console.ReadLine();
+        }
+    }
+}
+
+public class Users
+{
+    public void MostrarUsuarios()
+    {
+        List<string> usuarios = new List<string>
+        {
+            "Usuario 1: Juan Pérez",
+            "Usuario 2: María Gómez",
+            "Usuario 3: Carlos López"
+        };
+        while (true)
+        {
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
+
+            Console.WriteLine("========================================");
+            Console.WriteLine("       GESTIÓN DE USUARIOS");
+            Console.WriteLine("========================================");
+            Console.WriteLine("1. Registrar Usuarios");
+            Console.WriteLine("2. Listar usuarios");
+            Console.WriteLine("3. Volver al menú principal");
+            Console.WriteLine("========================================");
+            Console.Write("Seleccione una opción: ");
+
+            string? opcion = Console.ReadLine();
+
+            switch (opcion)
+            {
+                case "1":
+                    Console.Write("Ingrese el nombre del usuario: ");
+                    string? nuevoUsuario = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(nuevoUsuario))
+                    {
+                        usuarios.Add($"Usuario {usuarios.Count + 1}: {nuevoUsuario}");
+                        Console.WriteLine("¡Usuario agregado correctamente!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No ingresó ningún texto válido.");
+                    }
+
+                    break;
+                case "2":
+                    Console.WriteLine("Usuarios registrados:");
+                    foreach (string usuario in usuarios)
+                    {
+                        Console.WriteLine(usuario);
+                    }
+                    break;
+                case "3":
+                    Console.WriteLine("Volviendo al menú principal...");
+                    return;
+                default:
+                    Console.WriteLine("Opción inválida. Por favor, seleccione una opción válida.");
+                    break;
+            }
+
+            Console.WriteLine("\nPresione Enter para volver al menú de usuarios.");
             Console.ReadLine();
         }
     }
