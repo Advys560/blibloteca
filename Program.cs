@@ -57,7 +57,7 @@ public class Menu
                 new Loans().MostrarPrestamos();
                 return true;
             case "4":
-                Console.WriteLine("Funcionalidad de búsquedas y reportes aún no implementada.");
+                new SearchAndReports().MostrarBusquedaYReportes();
                 return true;
             case "5":
                 Console.WriteLine("Funcionalidad de guardar/cargar datos aún no implementada.");
@@ -146,6 +146,25 @@ public static class CatalogoLibros
         for (int i = 0; i < Libros.Count; i++)
         {
             Console.WriteLine($"{i + 1}. {Libros[i]}");
+        }
+    }
+
+    public static void BuscarLibros(string termino)
+    {
+        List<string> resultados = Libros
+            .Where(libro => libro.Contains(termino, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (resultados.Count == 0)
+        {
+            Console.WriteLine("No se encontraron libros con ese título.");
+            return;
+        }
+
+        Console.WriteLine("\nLibros encontrados:");
+        foreach (string libro in resultados)
+        {
+            Console.WriteLine($"- {libro}");
         }
     }
 
@@ -278,6 +297,61 @@ public class Loans
             }
 
             Console.WriteLine("\nPresione Enter para volver al menú de préstamos.");
+            Console.ReadLine();
+        }
+    }
+}
+
+public class SearchAndReports
+{
+    public void MostrarBusquedaYReportes()
+    {
+        while (true)
+        {
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
+
+            Console.WriteLine("========================================");
+            Console.WriteLine("       BÚSQUEDAS Y REPORTES");
+            Console.WriteLine("========================================");
+            Console.WriteLine("1. Buscar libro por título");
+            Console.WriteLine("2. Generar reporte de préstamos");
+            Console.WriteLine("3. Volver al menú principal");
+            Console.WriteLine("========================================");
+            Console.Write("Seleccione una opción: ");
+
+            string? opcion = Console.ReadLine();
+
+            switch (opcion)
+            {
+                case "1":
+                    Console.Write("Ingrese el título o parte del título que desea buscar: ");
+                    string? termino = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(termino))
+                    {
+                        Console.WriteLine("El término de búsqueda no puede estar vacío.");
+                    }
+                    else
+                    {
+                        CatalogoLibros.BuscarLibros(termino.Trim());
+                    }
+
+                    break;
+                case "2":
+                    Console.WriteLine("La función de generación de reportes aún no está implementada.");
+                    break;
+                case "3":
+                    Console.WriteLine("Volviendo al menú principal...");
+                    return;
+                default:
+                    Console.WriteLine("Opción inválida. Por favor, seleccione una opción válida.");
+                    break;
+            }
+
+            Console.WriteLine("\nPresione Enter para volver al menú de búsquedas y reportes.");
             Console.ReadLine();
         }
     }

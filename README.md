@@ -2,15 +2,19 @@
 
 Aplicación de consola para administrar un catálogo básico de libros y usuarios, desarrollada con .NET 10.
 
-## Funcionalidad
+## Funcionalidades
 
-- **Menú principal:** permite acceder a las secciones de libros, usuarios y préstamos, además de mostrar las opciones aún pendientes y salir.
-- **Libros:** permite consultar el catálogo, agregar títulos y ver los libros desde el menú de préstamos. El catálogo parte con «El principio de la eternidad».
-- **Usuarios:** permite registrar nombres y listar usuarios, incluidos tres registros de ejemplo.
-- **Préstamos:** permite consultar el catálogo compartido. El registro y listado de préstamos y devoluciones todavía no están implementados.
-- Los submenús permanecen abiertos hasta elegir la opción para volver al menú principal. Se validan las opciones y se rechazan títulos o nombres vacíos.
+- **Libros:** consultar el catálogo, ver los libros disponibles y agregar títulos. El catálogo incluye inicialmente «El principio de la eternidad».
+- **Usuarios:** registrar y listar usuarios. Cada vez que se abre la sección se cargan tres usuarios de ejemplo: Juan Pérez, María Gómez y Carlos López.
+- **Búsqueda:** buscar libros por título o por una parte del título, sin distinguir entre mayúsculas y minúsculas.
+- **Préstamos:** consultar el catálogo desde la sección de préstamos.
+- **Menús interactivos:** navegar por las secciones y volver al menú principal; las opciones inválidas y las entradas vacías se informan en pantalla.
 
-Los libros y usuarios se guardan en memoria durante la ejecución; los cambios se pierden al cerrar la aplicación. La persistencia, las búsquedas y los reportes están pendientes. El código se encuentra en `Program.cs`, organizado en las clases `Program`, `Menu`, `Books`, `CatalogoLibros`, `Users` y `Loans`.
+## Funcionalidades pendientes
+
+El registro, listado y devolución de préstamos, la consulta de libros prestados y la generación de reportes todavía no están implementados. La opción de guardar y cargar datos también está pendiente.
+
+Los libros agregados se conservan en memoria mientras se ejecuta la aplicación. Los usuarios registrados se conservan mientras se permanece en la sección de usuarios, pero se reinician al salir de ella. Al cerrar el programa, los cambios se pierden.
 
 ## Requisitos
 
@@ -24,3 +28,5 @@ Desde la carpeta del proyecto:
 dotnet build
 dotnet run
 ```
+
+El código de la aplicación está en [`Program.cs`](./Program.cs).
