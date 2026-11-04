@@ -1,19 +1,18 @@
 # Proyecto Biblioteca
 
-Aplicación de consola para gestionar un catálogo de biblioteca. El proyecto utiliza .NET 10.
+Aplicación de consola para gestionar libros y usuarios, desarrollada con .NET 10.
 
-## Descripción del trabajo realizado
+## Trabajo realizado
 
-Se preparó la estructura inicial de la aplicación y se organizó el código del menú principal y la gestión de libros. El menú permite navegar por las opciones disponibles, valida entradas vacías o no reconocidas y finaliza correctamente al seleccionar «Salir». El submenú de libros permanece abierto después de cada consulta y solo regresa al menú principal cuando se elige esa opción. También se documentaron las funciones que todavía están pendientes.
+- Se creó un menú principal para acceder a las secciones y salir del programa.
+- Se agregó un submenú de libros que permanece abierto después de cada consulta hasta elegir «Volver al menú principal».
+- Se agregó un submenú de usuarios para registrar nombres y mostrar una lista inicial de ejemplo.
+- Se validan las opciones del menú y los nombres vacíos.
+- El código de la aplicación está en `Program.cs`, organizado en las clases `Program`, `Menu`, `Books` y `Users`.
 
-## Funcionalidad actual
+## Estado actual
 
-- Menú principal con opciones para libros, usuarios, préstamos, búsquedas y reportes, guardar o cargar datos y salir.
-- Submenú de libros con opciones para consultar el catálogo, consultar libros disponibles, listar libros prestados y volver al menú principal.
-- Después de elegir una opción del submenú de libros, se muestra el resultado y se espera que se presione Enter para continuar en ese submenú.
-- Las opciones de usuarios, préstamos, búsquedas, reportes y almacenamiento todavía no están implementadas.
-
-Las opciones del catálogo muestran actualmente un libro de ejemplo: «El principio de la eternidad».
+Las consultas del submenú de libros muestran el mismo libro de ejemplo. Los usuarios nuevos se guardan en memoria mientras se usa el submenú; todavía no se almacenan al cerrar la aplicación. Las funciones de préstamos, búsquedas, reportes y guardar o cargar datos están pendientes.
 
 ## Requisitos
 
