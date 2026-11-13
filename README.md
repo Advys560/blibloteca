@@ -17,7 +17,7 @@ Aplicación de consola para administrar un catálogo básico de libros y usuario
 
 El registro, listado y devolución de préstamos, la consulta de libros prestados y la generación de reportes todavía no están implementados. Los datos guardados no se cargan automáticamente; la opción para cargarlos está pendiente.
 
-Los libros y usuarios agregados se conservan en memoria durante la ejecución. Para conservarlos entre ejecuciones, use **Persistencia > Guardar datos**. Reiniciar los datos vacía las listas en memoria; no elimina el archivo guardado.
+Los libros y usuarios agregados se conservan en memoria durante la ejecución. Para conservarlos entre ejecuciones, use **Persistencia > Guardar datos**. **Reiniciar datos** vacía las listas en memoria y elimina el archivo guardado, previa confirmación.
 
 ## Requisitos
 

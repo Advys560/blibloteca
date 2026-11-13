@@ -80,7 +80,7 @@ public class Menu
         return true;
     }
 
-    private static bool Confirmar(string mensaje)
+    internal static bool Confirmar(string mensaje)
     {
         while (true)
         {
@@ -129,10 +129,12 @@ public class Persistence
                     Console.WriteLine("La carga de datos aún no está implementada.");
                     break;
                 case "3":
-                    if (Confirmar("¿Está seguro de que desea vaciar todos los libros y usuarios? (S/N): "))
+                    if (Menu.Confirmar("¿Está seguro de que desea vaciar todos los libros y usuarios? (S/N): "))
                     {
-                        ReiniciarDatos();
-                        Console.WriteLine("Se vaciaron todos los libros y usuarios.");
+                        if (ReiniciarDatos())
+                        {
+                            Console.WriteLine("Se vaciaron todos los libros y usuarios y se eliminó el archivo guardado.");
+                        }
                     }
                     else
                     {
@@ -175,31 +177,25 @@ public class Persistence
         }
     }
 
-    private static void ReiniciarDatos()
+    private static bool ReiniciarDatos()
     {
-        CatalogoLibros.Libros.Clear();
-        Users.Usuarios.Clear();
-    }
-
-    private static bool Confirmar(string mensaje)
-    {
-        while (true)
+        try
         {
-            Console.Write(mensaje);
-            string? respuesta = Console.ReadLine()?.Trim();
-
-            if (string.Equals(respuesta, "S", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            if (string.Equals(respuesta, "N", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            Console.WriteLine("Respuesta inválida. Ingrese S para confirmar o N para cancelar.");
+            File.Delete(RutaArchivo);
+            CatalogoLibros.Libros.Clear();
+            Users.Usuarios.Clear();
+            return true;
         }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"No se pudieron vaciar los datos: {ex.Message}");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            Console.WriteLine($"No hay permisos para vaciar los datos: {ex.Message}");
+        }
+
+        return false;
     }
 
     private static string ObtenerCarpetaDatos()
