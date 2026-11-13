@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 internal static class Program
 {
@@ -76,6 +76,17 @@ public class Menu
 
 public class Books
 {
+    private readonly List<Libro> _libros = new()
+    {
+        new Libro
+        {
+            Id = 1,
+            Titulo = "El principio de la eternidad",
+            Autor = "No especificado",
+            Genero = "No especificado"
+        }
+    };
+
     public void MostrarLibros()
     {
         while (true)
@@ -100,13 +111,17 @@ public class Books
             switch (opcion)
             {
                 case "1":
-                    Console.WriteLine("1. el principio de la eternidad");
+                    MostrarLibros(_libros, "No hay libros registrados.", detalleCompleto: true);
                     break;
                 case "2":
-                    Console.WriteLine("1. el principio de la eternidad");
+                    MostrarLibros(
+                        _libros.Where(libro => libro.Disponible),
+                        "No hay libros disponibles.");
                     break;
                 case "3":
-                    Console.WriteLine("1. el principio de la eternidad");
+                    MostrarLibros(
+                        _libros.Where(libro => !libro.Disponible),
+                        "No hay libros prestados.");
                     break;
                 case "4":
                     Console.WriteLine("Volviendo al menú principal...");
@@ -118,6 +133,27 @@ public class Books
 
             Console.WriteLine("\nPresione Enter para volver al menú de libros.");
             Console.ReadLine();
+        }
+    }
+
+    private static void MostrarLibros(
+        IEnumerable<Libro> libros,
+        string mensajeVacio,
+        bool detalleCompleto = false)
+    {
+        List<Libro> resultados = libros.ToList();
+
+        if (resultados.Count == 0)
+        {
+            Console.WriteLine(mensajeVacio);
+            return;
+        }
+
+        foreach (Libro libro in resultados)
+        {
+            Console.WriteLine(detalleCompleto
+                ? libro.DetalleCompleto()
+                : libro.ResumenCorto());
         }
     }
 }
