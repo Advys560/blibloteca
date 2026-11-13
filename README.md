@@ -1,23 +1,57 @@
-# Proyecto Biblioteca
+# Proyecto Bliblotecta
 
-Aplicación de consola para gestionar un catálogo de biblioteca. El proyecto utiliza .NET 10.
+Aplicación de consola para administrar un catálogo básico de libros y usuarios, desarrollada en C# con .NET 10.
 
-## Descripción del trabajo realizado
+## Descripción
 
-Se preparó la estructura inicial de la aplicación y se organizó el código del menú principal y la gestión de libros. El menú permite navegar por las opciones disponibles, valida entradas vacías o no reconocidas y finaliza correctamente al seleccionar «Salir». El submenú de libros permanece abierto después de cada consulta y solo regresa al menú principal cuando se elige esa opción. También se documentaron las funciones que todavía están pendientes.
+Este proyecto simula una pequeña biblioteca digital donde el usuario puede:
 
-## Funcionalidad actual
+- consultar y agregar libros,
+- registrar y listar usuarios,
+- buscar libros por título,
+- guardar datos de la aplicación en un archivo JSON,
+- reiniciar la información de la biblioteca,
+- salir del sistema de forma segura con confirmación.
 
-- Menú principal con opciones para libros, usuarios, préstamos, búsquedas y reportes, guardar o cargar datos y salir.
-- Submenú de libros con opciones para consultar el catálogo, consultar libros disponibles, listar libros prestados y volver al menú principal.
-- Después de elegir una opción del submenú de libros, se muestra el resultado y se espera que se presione Enter para continuar en ese submenú.
-- Las opciones de usuarios, préstamos, búsquedas, reportes y almacenamiento todavía no están implementadas.
+## Funcionalidades implementadas
 
-Las opciones del catálogo muestran actualmente un libro de ejemplo: «El principio de la eternidad».
+- **Menú principal interactivo:** navegación por secciones con validación de opciones.
+- **Libros:** consulta del catálogo, listado inicial y agregado de nuevos títulos.
+- **Usuarios:** registro y listado de usuarios con datos de ejemplo iniciales.
+- **Búsqueda:** búsqueda de libros por nombre o por parte del título sin distinguir mayúsculas/minúsculas.
+- **Persistencia:** guardado de libros y usuarios en una carpeta local del sistema usando JSON.
+- **Reinicio de datos:** vaciado completo de libros y usuarios tras confirmación.
+- **Salida segura:** confirma antes de cerrar la aplicación.
+
+## Funcionalidades pendientes
+
+Las siguientes funciones aún no están implementadas:
+
+- registro y devolución de préstamos,
+- consulta de libros prestados,
+- generación de reportes,
+- carga automática de datos desde JSON.
+
+Los libros y usuarios agregados se mantienen en memoria durante la ejecución. Para conservarlos entre ejecuciones, use la opción de persistencia en el menú.
+
+## Implementación de POO
+
+La aplicación sigue un enfoque de programación orientada a objetos (POO), separando responsabilidades en clases y métodos reutilizables:
+
+- `Program`: inicia la ejecución de la aplicación.
+- `Menu`: controla el menú principal y delega las acciones según la opción seleccionada.
+- `Books`: gestiona la interfaz y las operaciones relacionadas con libros.
+- `Users`: gestiona la interfaz y registro de usuarios.
+- `Loans`: representa la gestión de préstamos, aunque todavía en fase de desarrollo.
+- `SearchAndReports`: controla búsquedas y reportes.
+- `Persistence`: se encarga de guardar y reiniciar datos.
+- `CatalogoLibros`: centraliza la colección de libros y las operaciones sobre ella.
+
+Además, se usa encapsulación al agrupar la lógica por módulos y manejo de colecciones estáticas para mantener el estado de la aplicación en memoria.
 
 ## Requisitos
 
-- SDK de .NET 10.
+- .NET 10 SDK
 
 ## Compilar y ejecutar
 
@@ -27,3 +61,5 @@ Desde la carpeta del proyecto:
 dotnet build
 dotnet run
 ```
+
+El punto de entrada principal está en [`Program.cs`](./Program.cs).
