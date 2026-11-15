@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Text.Json;
 
 internal static class Program
 {
@@ -10,6 +11,8 @@ internal static class Program
 
 public class Menu
 {
+    private readonly Loans _loans = new();
+
     public void MostrarMenu()
     {
         while (true)
@@ -38,31 +41,37 @@ public class Menu
         Console.WriteLine("2. Usuarios registrados");
         Console.WriteLine("3. Préstamos");
         Console.WriteLine("4. Búsquedas y reportes");
-        Console.WriteLine("5. Guardar / Cargar datos");
+        Console.WriteLine("5. Persistencia");
         Console.WriteLine("6. Salir");
         Console.Write("Seleccione una opción: ");
     }
 
-    private static bool ProcesarOpcion(string opcion)
+    private bool ProcesarOpcion(string opcion)
     {
         switch (opcion)
         {
             case "1":
-                new Books().MostrarLibros();
+                new Books(_loans).MostrarLibros();
                 return true;
             case "2":
                 new Users().MostrarUsuarios();
                 return true;
             case "3":
-                new Loans().MostrarPrestamos();
+                _loans.MostrarPrestamos();
                 return true;
             case "4":
                 new SearchAndReports().MostrarBusquedaYReportes();
                 return true;
             case "5":
-                Console.WriteLine("Funcionalidad de guardar/cargar datos aún no implementada.");
+                new Persistence().MostrarMenu();
                 return true;
             case "6":
+                if (!Confirmar("¿Está seguro de que desea salir? (S/N): "))
+                {
+                    Console.WriteLine("Salida cancelada.");
+                    return true;
+                }
+
                 Console.WriteLine("Saliendo del programa...");
                 return false;
             default:
@@ -72,28 +81,43 @@ public class Menu
 
         return true;
     }
-}
 
-public class Books
-{
-    public void MostrarLibros()
+    private static bool Confirmar(string mensaje)
     {
         while (true)
         {
-            if (!Console.IsOutputRedirected)
+            Console.Write(mensaje);
+            string? respuesta = Console.ReadLine()?.Trim();
+
+            if (string.Equals(respuesta, "S", StringComparison.OrdinalIgnoreCase))
             {
-                Console.Clear();
+                return true;
             }
 
-            Console.WriteLine("========================================");
-            Console.WriteLine("       GESTIÓN DE LIBROS");
-            Console.WriteLine("========================================");
-            Console.WriteLine("1. Consultar Libros");
-            Console.WriteLine("2. Consultar Libros disponibles");
-            Console.WriteLine("3. Listar prestados");
-            Console.WriteLine("4. Agregar libro");
-            Console.WriteLine("5. Volver al menú principal");
-            Console.WriteLine("========================================");
+            if (string.Equals(respuesta, "N", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            Console.WriteLine("Respuesta inválida. Ingrese S para confirmar o N para cancelar.");
+        }
+    }
+}
+
+public class Persistence
+{
+    private static readonly string CarpetaDatos = ObtenerCarpetaDatos();
+    private static readonly string RutaArchivo = Path.Combine(CarpetaDatos, "biblioteca.json");
+
+    public void MostrarMenu()
+    {
+        while (true)
+        {
+            Console.WriteLine("\n--- PERSISTENCIA ---");
+            Console.WriteLine("1. Guardar datos");
+            Console.WriteLine("2. Cargar datos (no disponible)");
+            Console.WriteLine("3. Reiniciar datos (vaciar todo)");
+            Console.WriteLine("4. Volver al menú principal");
             Console.Write("Seleccione una opción: ");
 
             string? opcion = Console.ReadLine();
@@ -101,28 +125,91 @@ public class Books
             switch (opcion)
             {
                 case "1":
-                    CatalogoLibros.MostrarLibros();
+                    GuardarDatos();
                     break;
                 case "2":
-                    CatalogoLibros.MostrarLibros();
+                    Console.WriteLine("La carga de datos aún no está implementada.");
                     break;
                 case "3":
-                    Console.WriteLine("La consulta de libros prestados aún no está implementada.");
+                    if (Confirmar("¿Está seguro de que desea vaciar todos los libros y usuarios? (S/N): "))
+                    {
+                        ReiniciarDatos();
+                        Console.WriteLine("Se vaciaron todos los libros y usuarios.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Reinicio cancelado.");
+                    }
+
                     break;
                 case "4":
-                    CatalogoLibros.AgregarLibro();
-                    break;
-                case "5":
-                    Console.WriteLine("Volviendo al menú principal...");
                     return;
                 default:
-                    Console.WriteLine("Opción inválida. Por favor, seleccione una opción válida.");
+                    Console.WriteLine("Opción inválida. Seleccione una opción del menú.");
                     break;
             }
-
-            Console.WriteLine("\nPresione Enter para volver al menú de libros.");
-            Console.ReadLine();
         }
+    }
+
+    private static void GuardarDatos()
+    {
+        try
+        {
+            Directory.CreateDirectory(CarpetaDatos);
+            string contenido = JsonSerializer.Serialize(
+                new
+                {
+                    Libros = CatalogoLibros.Libros,
+                    Usuarios = Users.Usuarios
+                },
+                new JsonSerializerOptions { WriteIndented = true });
+
+            File.WriteAllText(RutaArchivo, contenido);
+            Console.WriteLine($"Datos guardados correctamente en: {RutaArchivo}");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"No se pudieron guardar los datos: {ex.Message}");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            Console.WriteLine($"No hay permisos para guardar los datos: {ex.Message}");
+        }
+    }
+
+    private static void ReiniciarDatos()
+    {
+        CatalogoLibros.Libros.Clear();
+        Users.Usuarios.Clear();
+    }
+
+    private static bool Confirmar(string mensaje)
+    {
+        while (true)
+        {
+            Console.Write(mensaje);
+            string? respuesta = Console.ReadLine()?.Trim();
+
+            if (string.Equals(respuesta, "S", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (string.Equals(respuesta, "N", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            Console.WriteLine("Respuesta inválida. Ingrese S para confirmar o N para cancelar.");
+        }
+    }
+
+    private static string ObtenerCarpetaDatos()
+    {
+        string carpetaLocal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        return string.IsNullOrWhiteSpace(carpetaLocal)
+            ? Path.Combine(AppContext.BaseDirectory, "ProyectoBiblioteca")
+            : Path.Combine(carpetaLocal, "ProyectoBiblioteca");
     }
 }
 
@@ -184,16 +271,10 @@ public static class CatalogoLibros
     }
 }
 
-public class Users
+public class SearchAndReports
 {
-    public void MostrarUsuarios()
+    public void MostrarBusquedaYReportes()
     {
-        List<string> usuarios = new List<string>
-        {
-            "Usuario 1: Juan Pérez",
-            "Usuario 2: María Gómez",
-            "Usuario 3: Carlos López"
-        };
         while (true)
         {
             if (!Console.IsOutputRedirected)
@@ -202,10 +283,10 @@ public class Users
             }
 
             Console.WriteLine("========================================");
-            Console.WriteLine("       GESTIÓN DE USUARIOS");
+            Console.WriteLine("       BÚSQUEDAS Y REPORTES");
             Console.WriteLine("========================================");
-            Console.WriteLine("1. Registrar Usuarios");
-            Console.WriteLine("2. Listar usuarios");
+            Console.WriteLine("1. Buscar libro por título");
+            Console.WriteLine("2. Generar reporte de préstamos");
             Console.WriteLine("3. Volver al menú principal");
             Console.WriteLine("========================================");
             Console.Write("Seleccione una opción: ");
@@ -215,26 +296,17 @@ public class Users
             switch (opcion)
             {
                 case "1":
-                    Console.Write("Ingrese el nombre del usuario: ");
-                    string? nuevoUsuario = Console.ReadLine();
+                    Console.Write("Ingrese el título o parte del título que desea buscar: ");
+                    string? termino = Console.ReadLine();
 
-                    if (!string.IsNullOrWhiteSpace(nuevoUsuario))
+                    if (string.IsNullOrWhiteSpace(termino))
                     {
-                        usuarios.Add($"Usuario {usuarios.Count + 1}: {nuevoUsuario}");
-                        Console.WriteLine("¡Usuario agregado correctamente!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No ingresó ningún texto válido.");
+                        Console.WriteLine("El término de búsqueda no puede estar vacío.");
                     }
 
                     break;
                 case "2":
-                    Console.WriteLine("Usuarios registrados:");
-                    foreach (string usuario in usuarios)
-                    {
-                        Console.WriteLine(usuario);
-                    }
+                    Console.WriteLine("La función de generación de reportes aún no está implementada.");
                     break;
                 case "3":
                     Console.WriteLine("Volviendo al menú principal...");
@@ -244,59 +316,7 @@ public class Users
                     break;
             }
 
-            Console.WriteLine("\nPresione Enter para volver al menú de usuarios.");
-            Console.ReadLine();
-        }
-    }
-}
-
-public class Loans
-{
-    public void MostrarPrestamos()
-    {
-        while (true)
-        {
-            if (!Console.IsOutputRedirected)
-            {
-                Console.Clear();
-            }
-
-            Console.WriteLine("========================================");
-            Console.WriteLine("       GESTIÓN DE PRÉSTAMOS");
-            Console.WriteLine("========================================");
-            Console.WriteLine("1. Registrar Préstamo");
-            Console.WriteLine("2. Listar préstamos");
-            Console.WriteLine("3. Libros devueltos");
-            Console.WriteLine("4. Consultar catálogo de libros");
-            Console.WriteLine("5. Volver al menú principal");
-            Console.WriteLine("========================================");
-            Console.Write("Seleccione una opción: ");
-
-            string? opcion = Console.ReadLine();
-
-            switch (opcion)
-            {
-                case "1":
-                    Console.WriteLine("La función de registrar préstamos aún no está implementada.");
-                    break;
-                case "2":
-                    Console.WriteLine("La función de listar préstamos aún no está implementada.");
-                    break;
-                case "3":
-                    Console.WriteLine("La función de registrar devoluciones aún no está implementada.");
-                    break;
-                case "4":
-                    CatalogoLibros.MostrarLibros();
-                    break;
-                case "5":
-                    Console.WriteLine("Volviendo al menú principal...");
-                    return;
-                default:
-                    Console.WriteLine("Opción inválida. Por favor, seleccione una opción válida.");
-                    break;
-            }
-
-            Console.WriteLine("\nPresione Enter para volver al menú de préstamos.");
+            Console.WriteLine("\nPresione Enter para volver al menú de búsquedas y reportes.");
             Console.ReadLine();
         }
     }
