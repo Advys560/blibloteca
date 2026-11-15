@@ -1,11 +1,17 @@
 public sealed class Prestamo
 {
     public Prestamo(int id, Usuario usuario, string libro)
+        : this(id, usuario, libro, DateTime.Now, null)
+    {
+    }
+
+    internal Prestamo(int id, Usuario usuario, string libro, DateTime fechaPrestamo, DateTime? fechaDevolucion)
     {
         Id = id;
         Usuario = usuario;
         Libro = libro;
-        FechaPrestamo = DateTime.Now;
+        FechaPrestamo = fechaPrestamo;
+        FechaDevolucion = fechaDevolucion;
     }
 
     public int Id { get; }
@@ -39,6 +45,23 @@ public sealed class Prestamo
 public class Loans
 {
     private readonly List<Prestamo> _prestamos = new();
+    private readonly Persistence _persistence;
+
+    public Loans(Persistence persistence)
+    {
+        _persistence = persistence;
+    }
+
+    internal IReadOnlyList<Prestamo> ObtenerTodosLosPrestamos()
+    {
+        return _prestamos.ToList();
+    }
+
+    internal void ReemplazarPrestamos(IEnumerable<Prestamo> prestamos)
+    {
+        _prestamos.Clear();
+        _prestamos.AddRange(prestamos);
+    }
 
     public IReadOnlyList<string> ObtenerLibrosDisponibles()
     {
@@ -66,11 +89,6 @@ public class Loans
     public IReadOnlyList<Prestamo> ObtenerPrestamosActivos()
     {
         return _prestamos.Where(prestamo => !prestamo.EstaDevuelto).ToList();
-    }
-
-    public IReadOnlyList<Prestamo> ObtenerTodosLosPrestamos()
-    {
-        return _prestamos.ToList();
     }
 
     public void MostrarPrestamos()
@@ -179,6 +197,7 @@ public class Loans
         int nuevoId = _prestamos.Count == 0 ? 1 : _prestamos.Max(prestamo => prestamo.Id) + 1;
         Prestamo prestamo = new(nuevoId, usuarios[indiceUsuario.Value - 1], libros[indiceLibro.Value - 1]);
         _prestamos.Add(prestamo);
+        _persistence.GuardarDatos();
         Console.WriteLine("Préstamo registrado correctamente.");
         Console.WriteLine(prestamo.ObtenerDetalle());
     }
@@ -224,6 +243,7 @@ public class Loans
 
         Prestamo prestamo = pendientes[indicePrestamo.Value - 1];
         prestamo.RegistrarDevolucion();
+        _persistence.GuardarDatos();
         Console.WriteLine("Devolución registrada correctamente.");
         Console.WriteLine(prestamo.ObtenerDetalle());
     }

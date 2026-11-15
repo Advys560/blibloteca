@@ -1,12 +1,12 @@
 public class Books
 {
     private readonly Loans _loans;
-    private readonly SearchAndReports _searchAndReports;
+    private readonly Persistence _persistence;
 
-    public Books(Loans loans)
+    public Books(Loans loans, Persistence persistence)
     {
         _loans = loans;
-        _searchAndReports = new SearchAndReports(loans);
+        _persistence = persistence;
     }
 
     public void MostrarLibros()
@@ -25,8 +25,7 @@ public class Books
             Console.WriteLine("2. Consultar Libros disponibles");
             Console.WriteLine("3. Libros prestados");
             Console.WriteLine("4. Agregar libro");
-            Console.WriteLine("5. Buscar libro por título");
-            Console.WriteLine("6. Volver al menú principal");
+            Console.WriteLine("5. Volver al menú principal");
             Console.WriteLine("========================================");
             Console.Write("Seleccione una opción: ");
 
@@ -44,12 +43,13 @@ public class Books
                     MostrarLibrosPrestados();
                     break;
                 case "4":
-                    CatalogoLibros.AgregarLibro();
+                    if (CatalogoLibros.AgregarLibro())
+                    {
+                        _persistence.GuardarDatos();
+                    }
+
                     break;
                 case "5":
-                    _searchAndReports.BuscarLibroPorTitulo();
-                    break;
-                case "6":
                     Console.WriteLine("Volviendo al menú principal...");
                     return;
                 default:
