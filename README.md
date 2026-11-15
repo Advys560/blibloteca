@@ -17,20 +17,17 @@ Este proyecto simula una pequeña biblioteca digital donde el usuario puede:
 
 - **Menú principal interactivo:** navegación por secciones con validación de opciones.
 - **Libros:** consulta del catálogo, listado inicial y agregado de nuevos títulos.
+- **Disponibilidad:** consulta de libros disponibles y préstamos activos.
 - **Usuarios:** registro y listado de usuarios con datos de ejemplo iniciales.
-- **Búsqueda:** búsqueda de libros por nombre o por parte del título sin distinguir mayúsculas/minúsculas.
+- **Búsqueda y reportes:** búsqueda de libros por título y reporte de préstamos con estado.
+- **Préstamos:** registro, consulta y devolución de libros.
 - **Persistencia:** guardado de libros y usuarios en una carpeta local del sistema usando JSON.
 - **Reinicio de datos:** vaciado completo de libros y usuarios tras confirmación.
 - **Salida segura:** confirma antes de cerrar la aplicación.
 
 ## Funcionalidades pendientes
 
-Las siguientes funciones aún no están implementadas:
-
-- registro y devolución de préstamos,
-- consulta de libros prestados,
-- generación de reportes,
-- carga automática de datos desde JSON.
+La carga automática de datos desde JSON aún no está implementada.
 
 Los libros y usuarios agregados se mantienen en memoria durante la ejecución. Para conservarlos entre ejecuciones, use la opción de persistencia en el menú.
 
@@ -42,12 +39,12 @@ La aplicación sigue un enfoque de programación orientada a objetos (POO), sepa
 - `Menu`: controla el menú principal y delega las acciones según la opción seleccionada.
 - `Books`: gestiona la interfaz y las operaciones relacionadas con libros.
 - `Users`: gestiona la interfaz y registro de usuarios.
-- `Loans`: representa la gestión de préstamos, aunque todavía en fase de desarrollo.
-- `SearchAndReports`: controla búsquedas y reportes.
+- `Loans`: registra préstamos, controla devoluciones y consulta libros disponibles y prestados.
+- `SearchAndReports`: controla búsquedas y reportes y comparte sus operaciones con el menú de libros.
 - `Persistence`: se encarga de guardar y reiniciar datos.
 - `CatalogoLibros`: centraliza la colección de libros y las operaciones sobre ella.
 
-Además, se usa encapsulación al agrupar la lógica por módulos y manejo de colecciones estáticas para mantener el estado de la aplicación en memoria.
+Además, se usa encapsulación al agrupar la lógica por módulos. El catálogo, los usuarios y los préstamos mantienen su estado en memoria durante la ejecución y se comparten entre los menús que los utilizan.
 
 ## Requisitos
 

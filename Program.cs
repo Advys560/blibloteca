@@ -12,6 +12,12 @@ internal static class Program
 public class Menu
 {
     private readonly Loans _loans = new();
+    private readonly SearchAndReports _searchAndReports;
+
+    public Menu()
+    {
+        _searchAndReports = new SearchAndReports(_loans);
+    }
 
     public void MostrarMenu()
     {
@@ -60,7 +66,7 @@ public class Menu
                 _loans.MostrarPrestamos();
                 return true;
             case "4":
-                new SearchAndReports().MostrarBusquedaYReportes();
+                _searchAndReports.MostrarBusquedaYReportes();
                 return true;
             case "5":
                 new Persistence().MostrarMenu();
@@ -268,111 +274,5 @@ public static class CatalogoLibros
 
         Libros.Add(nuevoLibro.Trim());
         Console.WriteLine("Libro agregado correctamente.");
-    }
-}
-
-public class SearchAndReports
-{
-    public void MostrarBusquedaYReportes()
-    {
-        while (true)
-        {
-            if (!Console.IsOutputRedirected)
-            {
-                Console.Clear();
-            }
-
-            Console.WriteLine("========================================");
-            Console.WriteLine("       BÚSQUEDAS Y REPORTES");
-            Console.WriteLine("========================================");
-            Console.WriteLine("1. Buscar libro por título");
-            Console.WriteLine("2. Generar reporte de préstamos");
-            Console.WriteLine("3. Volver al menú principal");
-            Console.WriteLine("========================================");
-            Console.Write("Seleccione una opción: ");
-
-            string? opcion = Console.ReadLine();
-
-            switch (opcion)
-            {
-                case "1":
-                    Console.Write("Ingrese el título o parte del título que desea buscar: ");
-                    string? termino = Console.ReadLine();
-
-                    if (string.IsNullOrWhiteSpace(termino))
-                    {
-                        Console.WriteLine("El término de búsqueda no puede estar vacío.");
-                    }
-
-                    break;
-                case "2":
-                    Console.WriteLine("La función de generación de reportes aún no está implementada.");
-                    break;
-                case "3":
-                    Console.WriteLine("Volviendo al menú principal...");
-                    return;
-                default:
-                    Console.WriteLine("Opción inválida. Por favor, seleccione una opción válida.");
-                    break;
-            }
-
-            Console.WriteLine("\nPresione Enter para volver al menú de búsquedas y reportes.");
-            Console.ReadLine();
-        }
-    }
-}
-
-public class SearchAndReports
-{
-    public void MostrarBusquedaYReportes()
-    {
-        while (true)
-        {
-            if (!Console.IsOutputRedirected)
-            {
-                Console.Clear();
-            }
-
-            Console.WriteLine("========================================");
-            Console.WriteLine("       BÚSQUEDAS Y REPORTES");
-            Console.WriteLine("========================================");
-            Console.WriteLine("1. Buscar libro por título");
-            Console.WriteLine("2. Generar reporte de préstamos");
-            Console.WriteLine("3. Volver al menú principal");
-            Console.WriteLine("========================================");
-            Console.Write("Seleccione una opción: ");
-
-            string? opcion = Console.ReadLine();
-
-            switch (opcion)
-            {
-                case "1":
-                    Console.Write("Ingrese el título o parte del título que desea buscar: ");
-                    string? termino = Console.ReadLine();
-
-                    if (string.IsNullOrWhiteSpace(termino))
-                    {
-                        Console.WriteLine("El término de búsqueda no puede estar vacío.");
-                    }
-                    else
-                    {
-                        CatalogoLibros.BuscarLibros(termino.Trim());
-                    }
-
-                    break;
-                case "2":
-                    Console.WriteLine("La función de generación de reportes aún no está implementada.");
-                    break;
-                case "3":
-                    Console.WriteLine("Volviendo al menú principal...");
-                    return;
-                default:
-                    Console.WriteLine("Opción inválida. Por favor, seleccione una opción válida.");
-                    break;
-            }
-
-            Console.WriteLine("\nPresione Enter para volver al menú de búsquedas y reportes.");
-            Console.ReadLine();
-        }
     }
 }

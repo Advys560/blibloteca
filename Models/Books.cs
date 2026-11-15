@@ -1,10 +1,12 @@
 public class Books
 {
     private readonly Loans _loans;
+    private readonly SearchAndReports _searchAndReports;
 
     public Books(Loans loans)
     {
         _loans = loans;
+        _searchAndReports = new SearchAndReports(loans);
     }
 
     public void MostrarLibros()
@@ -23,7 +25,8 @@ public class Books
             Console.WriteLine("2. Consultar Libros disponibles");
             Console.WriteLine("3. Libros prestados");
             Console.WriteLine("4. Agregar libro");
-            Console.WriteLine("5. Volver al menú principal");
+            Console.WriteLine("5. Buscar libro por título");
+            Console.WriteLine("6. Volver al menú principal");
             Console.WriteLine("========================================");
             Console.Write("Seleccione una opción: ");
 
@@ -44,6 +47,9 @@ public class Books
                     CatalogoLibros.AgregarLibro();
                     break;
                 case "5":
+                    _searchAndReports.BuscarLibroPorTitulo();
+                    break;
+                case "6":
                     Console.WriteLine("Volviendo al menú principal...");
                     return;
                 default:

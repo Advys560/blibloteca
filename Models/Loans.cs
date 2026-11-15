@@ -68,6 +68,11 @@ public class Loans
         return _prestamos.Where(prestamo => !prestamo.EstaDevuelto).ToList();
     }
 
+    public IReadOnlyList<Prestamo> ObtenerTodosLosPrestamos()
+    {
+        return _prestamos.ToList();
+    }
+
     public void MostrarPrestamos()
     {
         while (true)
