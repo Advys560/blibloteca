@@ -12,9 +12,9 @@ public class Books
             Console.WriteLine("========================================");
             Console.WriteLine("       GESTIÓN DE LIBROS");
             Console.WriteLine("========================================");
-            Console.WriteLine("1. Consultar Libros");
+            Console.WriteLine("1. Catalogo");
             Console.WriteLine("2. Consultar Libros disponibles");
-            Console.WriteLine("3. Listar prestados");
+            Console.WriteLine("3. Libros prestados");
             Console.WriteLine("4. Agregar libro");
             Console.WriteLine("5. Volver al menú principal");
             Console.WriteLine("========================================");
