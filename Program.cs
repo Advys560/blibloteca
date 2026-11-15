@@ -234,25 +234,6 @@ public static class CatalogoLibros
         }
     }
 
-    public static void BuscarLibros(string termino)
-    {
-        List<string> resultados = Libros
-            .Where(libro => libro.Contains(termino, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        if (resultados.Count == 0)
-        {
-            Console.WriteLine("No se encontraron libros con ese título.");
-            return;
-        }
-
-        Console.WriteLine("\nLibros encontrados:");
-        foreach (string libro in resultados)
-        {
-            Console.WriteLine($"- {libro}");
-        }
-    }
-
     public static void AgregarLibro()
     {
         Console.Write("Ingrese el título del libro: ");
@@ -352,10 +333,6 @@ public class SearchAndReports
                     if (string.IsNullOrWhiteSpace(termino))
                     {
                         Console.WriteLine("El término de búsqueda no puede estar vacío.");
-                    }
-                    else
-                    {
-                        CatalogoLibros.BuscarLibros(termino.Trim());
                     }
 
                     break;
