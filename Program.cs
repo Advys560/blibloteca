@@ -11,6 +11,8 @@ internal static class Program
 
 public class Menu
 {
+    private readonly Loans _loans = new();
+
     public void MostrarMenu()
     {
         while (true)
@@ -44,18 +46,18 @@ public class Menu
         Console.Write("Seleccione una opción: ");
     }
 
-    private static bool ProcesarOpcion(string opcion)
+    private bool ProcesarOpcion(string opcion)
     {
         switch (opcion)
         {
             case "1":
-                new Books().MostrarLibros();
+                new Books(_loans).MostrarLibros();
                 return true;
             case "2":
                 new Users().MostrarUsuarios();
                 return true;
             case "3":
-                new Loans().MostrarPrestamos();
+                _loans.MostrarPrestamos();
                 return true;
             case "4":
                 new SearchAndReports().MostrarBusquedaYReportes();
@@ -247,58 +249,6 @@ public static class CatalogoLibros
 
         Libros.Add(nuevoLibro.Trim());
         Console.WriteLine("Libro agregado correctamente.");
-    }
-}
-
-public class Loans
-{
-    public void MostrarPrestamos()
-    {
-        while (true)
-        {
-            if (!Console.IsOutputRedirected)
-            {
-                Console.Clear();
-            }
-
-            Console.WriteLine("========================================");
-            Console.WriteLine("       GESTIÓN DE PRÉSTAMOS");
-            Console.WriteLine("========================================");
-            Console.WriteLine("1. Registrar Préstamo");
-            Console.WriteLine("2. Listar préstamos");
-            Console.WriteLine("3. Libros devueltos");
-            Console.WriteLine("4. Consultar catálogo de libros");
-            Console.WriteLine("5. Volver al menú principal");
-            Console.WriteLine("========================================");
-            Console.Write("Seleccione una opción: ");
-
-            string? opcion = Console.ReadLine();
-
-            switch (opcion)
-            {
-                case "1":
-                    Console.WriteLine("La función de registrar préstamos aún no está implementada.");
-                    break;
-                case "2":
-                    Console.WriteLine("La función de listar préstamos aún no está implementada.");
-                    break;
-                case "3":
-                    Console.WriteLine("La función de registrar devoluciones aún no está implementada.");
-                    break;
-                case "4":
-                    CatalogoLibros.MostrarLibros();
-                    break;
-                case "5":
-                    Console.WriteLine("Volviendo al menú principal...");
-                    return;
-                default:
-                    Console.WriteLine("Opción inválida. Por favor, seleccione una opción válida.");
-                    break;
-            }
-
-            Console.WriteLine("\nPresione Enter para volver al menú de préstamos.");
-            Console.ReadLine();
-        }
     }
 }
 
