@@ -1,27 +1,49 @@
-# Proyecto Biblioteca
+# Proyecto Bliblotecta
 
-Aplicación de consola para administrar un catálogo básico de libros y usuarios, desarrollada con .NET 10.
+Aplicación de consola para administrar un catálogo básico de libros y usuarios, desarrollada en C# con .NET 10.
 
-## Funcionalidades
+## Descripción
 
-- **Libros:** consultar el catálogo, ver los libros disponibles y agregar títulos. El catálogo incluye inicialmente «El principio de la eternidad».
-- **Usuarios:** registrar y listar usuarios. La lista inicia con tres usuarios de ejemplo: Juan Pérez, María Gómez y Carlos López.
-- **Búsqueda:** buscar libros por título o por una parte del título, sin distinguir entre mayúsculas y minúsculas.
-- **Préstamos:** consultar el catálogo desde la sección de préstamos.
-- **Persistencia:** guardar libros y usuarios en un archivo JSON ubicado en la carpeta local de datos de la aplicación. La carga aún no está implementada.
-- **Reinicio:** vaciar todos los libros y usuarios después de confirmar la acción.
-- **Salida segura:** confirmar antes de salir del programa.
-- **Menús interactivos:** navegar por las secciones y volver al menú principal; las opciones inválidas y las entradas vacías se informan en pantalla.
+Este proyecto simula una pequeña biblioteca digital donde el usuario puede:
 
-## Funcionalidades pendientes
+- consultar y agregar libros,
+- registrar y listar usuarios,
+- buscar libros por título,
+- guardar datos de la aplicación en un archivo JSON,
+- reiniciar la información de la biblioteca,
+- salir del sistema de forma segura con confirmación.
 
-El registro, listado y devolución de préstamos, la consulta de libros prestados y la generación de reportes todavía no están implementados. Los datos guardados no se cargan automáticamente; la opción para cargarlos está pendiente.
+## Funcionalidades implementadas
 
-Los libros y usuarios agregados se conservan en memoria durante la ejecución. Para conservarlos entre ejecuciones, use **Persistencia > Guardar datos**. Reiniciar los datos vacía las listas en memoria; no elimina el archivo guardado.
+- **Menú principal interactivo:** navegación por secciones con validación de opciones.
+- **Libros:** consulta del catálogo, listado inicial y agregado de nuevos títulos.
+- **Usuarios:** registro y listado de usuarios con datos de ejemplo iniciales.
+- **Préstamos:** registro, consulta y devolución de libros.
+- **Búsqueda:** búsqueda de libros por nombre o por parte del título sin distinguir mayúsculas/minúsculas.
+- **Reportes:** listado de préstamos registrados con su estado.
+- **Persistencia:** carga al iniciar y guardado de libros, usuarios y préstamos usando JSON.
+- **Reinicio de datos:** vaciado de libros, usuarios y préstamos tras confirmación.
+- **Salida segura:** confirma antes de cerrar la aplicación.
+
+## Implementación de POO
+
+La aplicación sigue un enfoque de programación orientada a objetos (POO), separando responsabilidades en clases y métodos reutilizables:
+
+- `Program`: inicia la persistencia, carga los datos y abre la aplicación.
+- `Menu`: controla el menú principal y delega las acciones según la opción seleccionada.
+- `Books`: gestiona la interfaz y las operaciones relacionadas con libros.
+- `Users`: gestiona la interfaz y registro de usuarios.
+- `Loans`: gestiona los préstamos y la disponibilidad de los libros.
+- `Prestamo`: representa cada préstamo y su estado.
+- `SearchAndReports`: controla búsquedas y reportes.
+- `Persistence`: se encarga de cargar, guardar y reiniciar datos.
+- `CatalogoLibros`: centraliza la colección de libros y las operaciones sobre ella.
+
+Las clases se encuentran en `Models/` excepto el punto de entrada, que permanece en `Program.cs`. Los menús comparten las mismas instancias de préstamos y persistencia para mantener sincronizado el estado de la aplicación.
 
 ## Requisitos
 
-- SDK de .NET 10.
+- .NET 10 SDK
 
 ## Compilar y ejecutar
 
@@ -32,4 +54,4 @@ dotnet build
 dotnet run
 ```
 
-El código de la aplicación está en [`Program.cs`](./Program.cs).
+El punto de entrada principal está en [`Program.cs`](./Program.cs).
