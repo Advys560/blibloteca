@@ -1,10 +1,12 @@
 public class Books
 {
     private readonly Loans _loans;
+    private readonly Persistence _persistence;
 
-    public Books(Loans loans)
+    public Books(Loans loans, Persistence persistence)
     {
         _loans = loans;
+        _persistence = persistence;
     }
 
     public void MostrarLibros()
@@ -41,7 +43,11 @@ public class Books
                     MostrarLibrosPrestados();
                     break;
                 case "4":
-                    CatalogoLibros.AgregarLibro();
+                    if (CatalogoLibros.AgregarLibro())
+                    {
+                        _persistence.GuardarDatos();
+                    }
+
                     break;
                 case "5":
                     Console.WriteLine("Volviendo al menú principal...");

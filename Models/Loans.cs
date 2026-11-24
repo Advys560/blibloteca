@@ -1,44 +1,23 @@
-public sealed class Prestamo
-{
-    public Prestamo(int id, Usuario usuario, string libro)
-    {
-        Id = id;
-        Usuario = usuario;
-        Libro = libro;
-        FechaPrestamo = DateTime.Now;
-    }
-
-    public int Id { get; }
-    public Usuario Usuario { get; }
-    public string Libro { get; }
-    public DateTime FechaPrestamo { get; }
-    public DateTime? FechaDevolucion { get; private set; }
-    public bool EstaDevuelto => FechaDevolucion.HasValue;
-
-    public void RegistrarDevolucion()
-    {
-        if (EstaDevuelto)
-        {
-            throw new InvalidOperationException("El préstamo ya fue devuelto.");
-        }
-
-        FechaDevolucion = DateTime.Now;
-    }
-
-    public string ObtenerDetalle()
-    {
-        string estado = EstaDevuelto
-            ? $"Devuelto el {FechaDevolucion:dd/MM/yyyy}"
-            : "Pendiente";
-
-        return $"Préstamo {Id} | Libro: {Libro} | Usuario: {Usuario.Nombre} | " +
-               $"Fecha: {FechaPrestamo:dd/MM/yyyy} | Estado: {estado}";
-    }
-}
-
 public class Loans
 {
     private readonly List<Prestamo> _prestamos = new();
+    private readonly Persistence _persistence;
+
+    public Loans(Persistence persistence)
+    {
+        _persistence = persistence;
+    }
+
+    internal IReadOnlyList<Prestamo> ObtenerTodosLosPrestamos()
+    {
+        return _prestamos.ToList();
+    }
+
+    internal void ReemplazarPrestamos(IEnumerable<Prestamo> prestamos)
+    {
+        _prestamos.Clear();
+        _prestamos.AddRange(prestamos);
+    }
 
     public IReadOnlyList<string> ObtenerLibrosDisponibles()
     {
@@ -66,6 +45,11 @@ public class Loans
     public IReadOnlyList<Prestamo> ObtenerPrestamosActivos()
     {
         return _prestamos.Where(prestamo => !prestamo.EstaDevuelto).ToList();
+    }
+
+    public IReadOnlyList<Prestamo> ObtenerPrestamosRegistrados()
+    {
+        return _prestamos.ToList();
     }
 
     public void MostrarPrestamos()
@@ -174,6 +158,7 @@ public class Loans
         int nuevoId = _prestamos.Count == 0 ? 1 : _prestamos.Max(prestamo => prestamo.Id) + 1;
         Prestamo prestamo = new(nuevoId, usuarios[indiceUsuario.Value - 1], libros[indiceLibro.Value - 1]);
         _prestamos.Add(prestamo);
+        _persistence.GuardarDatos();
         Console.WriteLine("Préstamo registrado correctamente.");
         Console.WriteLine(prestamo.ObtenerDetalle());
     }
@@ -219,6 +204,7 @@ public class Loans
 
         Prestamo prestamo = pendientes[indicePrestamo.Value - 1];
         prestamo.RegistrarDevolucion();
+        _persistence.GuardarDatos();
         Console.WriteLine("Devolución registrada correctamente.");
         Console.WriteLine(prestamo.ObtenerDetalle());
     }
