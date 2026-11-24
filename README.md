@@ -18,36 +18,28 @@ Este proyecto simula una pequeña biblioteca digital donde el usuario puede:
 - **Menú principal interactivo:** navegación por secciones con validación de opciones.
 - **Libros:** consulta del catálogo, listado inicial y agregado de nuevos títulos.
 - **Usuarios:** registro y listado de usuarios con datos de ejemplo iniciales.
+- **Préstamos:** registro, consulta y devolución de libros.
 - **Búsqueda:** búsqueda de libros por nombre o por parte del título sin distinguir mayúsculas/minúsculas.
-- **Persistencia:** guardado de libros y usuarios en una carpeta local del sistema usando JSON.
-- **Reinicio de datos:** vaciado completo de libros y usuarios tras confirmación.
+- **Reportes:** listado de préstamos registrados con su estado.
+- **Persistencia:** carga al iniciar y guardado de libros, usuarios y préstamos usando JSON.
+- **Reinicio de datos:** vaciado de libros, usuarios y préstamos tras confirmación.
 - **Salida segura:** confirma antes de cerrar la aplicación.
-
-## Funcionalidades pendientes
-
-Las siguientes funciones aún no están implementadas:
-
-- registro y devolución de préstamos,
-- consulta de libros prestados,
-- generación de reportes,
-- carga automática de datos desde JSON.
-
-Los libros y usuarios agregados se mantienen en memoria durante la ejecución. Para conservarlos entre ejecuciones, use la opción de persistencia en el menú.
 
 ## Implementación de POO
 
 La aplicación sigue un enfoque de programación orientada a objetos (POO), separando responsabilidades en clases y métodos reutilizables:
 
-- `Program`: inicia la ejecución de la aplicación.
+- `Program`: inicia la persistencia, carga los datos y abre la aplicación.
 - `Menu`: controla el menú principal y delega las acciones según la opción seleccionada.
 - `Books`: gestiona la interfaz y las operaciones relacionadas con libros.
 - `Users`: gestiona la interfaz y registro de usuarios.
-- `Loans`: representa la gestión de préstamos, aunque todavía en fase de desarrollo.
+- `Loans`: gestiona los préstamos y la disponibilidad de los libros.
+- `Prestamo`: representa cada préstamo y su estado.
 - `SearchAndReports`: controla búsquedas y reportes.
-- `Persistence`: se encarga de guardar y reiniciar datos.
+- `Persistence`: se encarga de cargar, guardar y reiniciar datos.
 - `CatalogoLibros`: centraliza la colección de libros y las operaciones sobre ella.
 
-Además, se usa encapsulación al agrupar la lógica por módulos y manejo de colecciones estáticas para mantener el estado de la aplicación en memoria.
+Las clases se encuentran en `Models/` excepto el punto de entrada, que permanece en `Program.cs`. Los menús comparten las mismas instancias de préstamos y persistencia para mantener sincronizado el estado de la aplicación.
 
 ## Requisitos
 
