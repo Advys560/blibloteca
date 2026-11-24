@@ -1,5 +1,12 @@
 public class Users
 {
+    private readonly Persistence _persistence;
+
+    public Users(Persistence persistence)
+    {
+        _persistence = persistence;
+    }
+
     public static List<Usuario> Usuarios { get; } = new()
     {
         new Usuario { Id = 1, Nombre = "Juan Pérez", Correo = "juan@email.com", Activo = true },
@@ -35,27 +42,29 @@ public class Users
                     Console.Write("Ingrese el correo del usuario: ");
                     string? nuevoCorreo = Console.ReadLine();
 
-                    if (!string.IsNullOrEmpty(nuevoNombre) && !string.IsNullOrEmpty(nuevoCorreo))
+                    if (string.IsNullOrWhiteSpace(nuevoNombre) || string.IsNullOrWhiteSpace(nuevoCorreo))
                     {
-                        Usuario nuevoUsuario = new Usuario
-                        {
-                            Id = Usuarios.Count + 1,
-                            Nombre = nuevoNombre.Trim(),
-                            Correo = nuevoCorreo.Trim(),
-                            Activo = true
-                        };
+                        Console.WriteLine("Debe ingresar un nombre y un correo válidos.");
+                        break;
+                    }
 
-                        Usuarios.Add(nuevoUsuario);
-                        Console.WriteLine("¡Usuario agregado correctamente!");
-                    }
-                    if (!nuevoCorreo.Contains("@"))
+                    string correo = nuevoCorreo.Trim();
+                    if (!correo.Contains('@'))
                     {
-                        nuevoCorreo += "@gmail.com";
+                        correo += "@gmail.com";
                     }
-                    else
+
+                    Usuario nuevoUsuario = new()
                     {
-                        Console.WriteLine("No ingresó ningún texto válido.");
-                    }
+                        Id = Usuarios.Count == 0 ? 1 : Usuarios.Max(usuario => usuario.Id) + 1,
+                        Nombre = nuevoNombre.Trim(),
+                        Correo = correo,
+                        Activo = true
+                    };
+
+                    Usuarios.Add(nuevoUsuario);
+                    _persistence.GuardarDatos();
+                    Console.WriteLine("¡Usuario agregado correctamente!");
                     break;
 
                 case "2":

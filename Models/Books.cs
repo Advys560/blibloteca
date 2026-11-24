@@ -1,5 +1,14 @@
 public class Books
 {
+    private readonly Loans _loans;
+    private readonly Persistence _persistence;
+
+    public Books(Loans loans, Persistence persistence)
+    {
+        _loans = loans;
+        _persistence = persistence;
+    }
+
     public void MostrarLibros()
     {
         while (true)
@@ -12,9 +21,9 @@ public class Books
             Console.WriteLine("========================================");
             Console.WriteLine("       GESTIÓN DE LIBROS");
             Console.WriteLine("========================================");
-            Console.WriteLine("1. Consultar Libros");
+            Console.WriteLine("1. Catalogo");
             Console.WriteLine("2. Consultar Libros disponibles");
-            Console.WriteLine("3. Listar prestados");
+            Console.WriteLine("3. Libros prestados");
             Console.WriteLine("4. Agregar libro");
             Console.WriteLine("5. Volver al menú principal");
             Console.WriteLine("========================================");
@@ -28,13 +37,17 @@ public class Books
                     CatalogoLibros.MostrarLibros();
                     break;
                 case "2":
-                    CatalogoLibros.MostrarLibros();
+                    MostrarLibrosDisponibles();
                     break;
                 case "3":
-                    Console.WriteLine("La consulta de libros prestados aún no está implementada.");
+                    MostrarLibrosPrestados();
                     break;
                 case "4":
-                    CatalogoLibros.AgregarLibro();
+                    if (CatalogoLibros.AgregarLibro())
+                    {
+                        _persistence.GuardarDatos();
+                    }
+
                     break;
                 case "5":
                     Console.WriteLine("Volviendo al menú principal...");
@@ -46,6 +59,38 @@ public class Books
 
             Console.WriteLine("\nPresione Enter para volver al menú de libros.");
             Console.ReadLine();
+        }
+    }
+
+    private void MostrarLibrosDisponibles()
+    {
+        IReadOnlyList<string> libros = _loans.ObtenerLibrosDisponibles();
+        if (libros.Count == 0)
+        {
+            Console.WriteLine("No hay libros disponibles.");
+            return;
+        }
+
+        Console.WriteLine("\nLibros disponibles:");
+        for (int i = 0; i < libros.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {libros[i]}");
+        }
+    }
+
+    private void MostrarLibrosPrestados()
+    {
+        IReadOnlyList<Prestamo> prestamos = _loans.ObtenerPrestamosActivos();
+        if (prestamos.Count == 0)
+        {
+            Console.WriteLine("No hay libros prestados.");
+            return;
+        }
+
+        Console.WriteLine("\nLibros prestados:");
+        foreach (Prestamo prestamo in prestamos)
+        {
+            Console.WriteLine(prestamo.ObtenerDetalle());
         }
     }
 }
