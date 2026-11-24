@@ -1,10 +1,14 @@
+using Proyecto_Bliblotecta.Services;
+
 public class SearchAndReports
 {
-    private readonly Loans _loans;
+    private readonly LibroService _libros;
+    private readonly PrestamoService _prestamos;
 
-    public SearchAndReports(Loans loans)
+    public SearchAndReports(LibroService libros, PrestamoService prestamos)
     {
-        _loans = loans;
+        _libros = libros;
+        _prestamos = prestamos;
     }
 
     public void MostrarBusquedaYReportes()
@@ -52,7 +56,7 @@ public class SearchAndReports
         }
     }
 
-    private static void BuscarLibro()
+    private void BuscarLibro()
     {
         Console.Write("Ingrese el título o parte del título que desea buscar: ");
         string? termino = Console.ReadLine();
@@ -63,12 +67,23 @@ public class SearchAndReports
             return;
         }
 
-        CatalogoLibros.BuscarLibros(termino.Trim());
+        List<Libro> resultados = _libros.BuscarPorTitulo(termino.Trim());
+        if (resultados.Count == 0)
+        {
+            Console.WriteLine("No se encontraron libros con ese título.");
+            return;
+        }
+
+        Console.WriteLine("\nLibros encontrados:");
+        foreach (Libro libro in resultados)
+        {
+            Console.WriteLine($"- {libro.Titulo}");
+        }
     }
 
     private void MostrarReportePrestamos()
     {
-        IReadOnlyList<Prestamo> prestamos = _loans.ObtenerPrestamosRegistrados();
+        List<Prestamo> prestamos = _prestamos.ObtenerTodos();
         if (prestamos.Count == 0)
         {
             Console.WriteLine("No hay préstamos registrados para generar el reporte.");

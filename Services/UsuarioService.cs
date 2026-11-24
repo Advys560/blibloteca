@@ -34,6 +34,13 @@ public class UsuarioService
         return true;
     }
 
+    internal void ReemplazarTodos(IEnumerable<Usuario> nuevosUsuarios)
+    {
+        ArgumentNullException.ThrowIfNull(nuevosUsuarios);
+        usuarios.Clear();
+        usuarios.AddRange(nuevosUsuarios);
+    }
+
     /// <summary>
     /// Elimina un usuario por Id o correo. No elimina usuarios con prestamos activos.
     /// </summary>

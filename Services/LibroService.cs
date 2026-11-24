@@ -37,6 +37,13 @@ public class LibroService
         return true;
     }
 
+    internal void ReemplazarTodos(IEnumerable<Libro> nuevosLibros)
+    {
+        ArgumentNullException.ThrowIfNull(nuevosLibros);
+        libros.Clear();
+        libros.AddRange(nuevosLibros);
+    }
+
     /// <summary>
     /// Elimina un libro disponible por su ISBN.
     /// </summary>

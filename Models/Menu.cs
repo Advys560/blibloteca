@@ -1,17 +1,24 @@
+using Proyecto_Bliblotecta.ConsoleUI;
+using Proyecto_Bliblotecta.Services;
+
 public class Menu
 {
-    private readonly Books _books;
-    private readonly Users _users;
-    private readonly Loans _loans;
+    private readonly BooksMenu _books;
+    private readonly UsersMenu _users;
+    private readonly LoansMenu _loans;
     private readonly SearchAndReports _searchAndReports;
     private readonly Persistence _persistence;
 
-    public Menu(Loans loans, Persistence persistence)
+    public Menu(
+        LibroService libros,
+        UsuarioService usuarios,
+        PrestamoService prestamos,
+        Persistence persistence)
     {
-        _books = new Books(loans, persistence);
-        _users = new Users(persistence);
-        _loans = loans;
-        _searchAndReports = new SearchAndReports(loans);
+        _books = new BooksMenu(libros, prestamos, persistence);
+        _users = new UsersMenu(usuarios, persistence);
+        _loans = new LoansMenu(prestamos, libros, usuarios, persistence);
+        _searchAndReports = new SearchAndReports(libros, prestamos);
         _persistence = persistence;
     }
 

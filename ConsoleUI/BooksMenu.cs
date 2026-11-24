@@ -1,11 +1,17 @@
-public class Books
+using Proyecto_Bliblotecta.Services;
+
+namespace Proyecto_Bliblotecta.ConsoleUI;
+
+public class BooksMenu
 {
-    private readonly Loans _loans;
+    private readonly LibroService _libros;
+    private readonly PrestamoService _prestamos;
     private readonly Persistence _persistence;
 
-    public Books(Loans loans, Persistence persistence)
+    public BooksMenu(LibroService libros, PrestamoService prestamos, Persistence persistence)
     {
-        _loans = loans;
+        _libros = libros;
+        _prestamos = prestamos;
         _persistence = persistence;
     }
 
@@ -21,20 +27,18 @@ public class Books
             Console.WriteLine("========================================");
             Console.WriteLine("       GESTIÓN DE LIBROS");
             Console.WriteLine("========================================");
-            Console.WriteLine("1. Catalogo");
-            Console.WriteLine("2. Consultar Libros disponibles");
+            Console.WriteLine("1. Catálogo");
+            Console.WriteLine("2. Consultar libros disponibles");
             Console.WriteLine("3. Libros prestados");
             Console.WriteLine("4. Agregar libro");
             Console.WriteLine("5. Volver al menú principal");
             Console.WriteLine("========================================");
             Console.Write("Seleccione una opción: ");
 
-            string? opcion = Console.ReadLine();
-
-            switch (opcion)
+            switch (Console.ReadLine())
             {
                 case "1":
-                    CatalogoLibros.MostrarLibros();
+                    MostrarCatalogo();
                     break;
                 case "2":
                     MostrarLibrosDisponibles();
@@ -43,11 +47,7 @@ public class Books
                     MostrarLibrosPrestados();
                     break;
                 case "4":
-                    if (CatalogoLibros.AgregarLibro())
-                    {
-                        _persistence.GuardarDatos();
-                    }
-
+                    AgregarLibro();
                     break;
                 case "5":
                     Console.WriteLine("Volviendo al menú principal...");
@@ -62,9 +62,26 @@ public class Books
         }
     }
 
+    private void MostrarCatalogo()
+    {
+        List<Libro> libros = _libros.ObtenerTodos();
+        if (libros.Count == 0)
+        {
+            Console.WriteLine("No hay libros registrados.");
+            return;
+        }
+
+        Console.WriteLine("\nLibros registrados:");
+        foreach (Libro libro in libros)
+        {
+            Console.WriteLine($"{libro.Titulo} | Autor: {libro.Autor} | ISBN: {libro.Isbn} | " +
+                              $"Estado: {(libro.Disponible ? "Disponible" : "Prestado")}");
+        }
+    }
+
     private void MostrarLibrosDisponibles()
     {
-        IReadOnlyList<string> libros = _loans.ObtenerLibrosDisponibles();
+        List<Libro> libros = _libros.ObtenerTodos().Where(libro => libro.Disponible).ToList();
         if (libros.Count == 0)
         {
             Console.WriteLine("No hay libros disponibles.");
@@ -74,13 +91,15 @@ public class Books
         Console.WriteLine("\nLibros disponibles:");
         for (int i = 0; i < libros.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. {libros[i]}");
+            Console.WriteLine($"{i + 1}. {libros[i].Titulo}");
         }
     }
 
     private void MostrarLibrosPrestados()
     {
-        IReadOnlyList<Prestamo> prestamos = _loans.ObtenerPrestamosActivos();
+        List<Prestamo> prestamos = _prestamos.ObtenerTodos()
+            .Where(prestamo => !prestamo.EstaDevuelto)
+            .ToList();
         if (prestamos.Count == 0)
         {
             Console.WriteLine("No hay libros prestados.");
@@ -92,5 +111,27 @@ public class Books
         {
             Console.WriteLine(prestamo.ObtenerDetalle());
         }
+    }
+
+    private void AgregarLibro()
+    {
+        Console.Write("Ingrese el título del libro: ");
+        string? titulo = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(titulo))
+        {
+            Console.WriteLine("El título no puede estar vacío.");
+            return;
+        }
+
+        int id = _libros.ObtenerTodos().Select(libro => libro.Id).DefaultIfEmpty(0).Max() + 1;
+        Libro libro = new(id, $"LOCAL-{id}", titulo.Trim(), "Desconocido", 0);
+        if (!_libros.AgregarLibro(libro))
+        {
+            Console.WriteLine("No se pudo agregar el libro.");
+            return;
+        }
+
+        _persistence.GuardarDatos();
+        Console.WriteLine("Libro agregado correctamente.");
     }
 }

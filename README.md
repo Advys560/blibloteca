@@ -31,15 +31,13 @@ La aplicación sigue un enfoque de programación orientada a objetos (POO), sepa
 
 - `Program`: inicia la persistencia, carga los datos y abre la aplicación.
 - `Menu`: controla el menú principal y delega las acciones según la opción seleccionada.
-- `Books`: gestiona la interfaz y las operaciones relacionadas con libros.
-- `Users`: gestiona la interfaz y registro de usuarios.
-- `Loans`: gestiona los préstamos y la disponibilidad de los libros.
+- `BooksMenu`, `UsersMenu` y `LoansMenu`: mantienen la interacción de consola en `ConsoleUI/`.
+- `LibroService`, `UsuarioService` y `PrestamoService`: gestionan en memoria las entidades y reglas de negocio en `Services/`.
 - `Prestamo`: representa cada préstamo y su estado.
 - `SearchAndReports`: controla búsquedas y reportes.
-- `Persistence`: se encarga de cargar, guardar y reiniciar datos.
-- `CatalogoLibros`: centraliza la colección de libros y las operaciones sobre ella.
+- `Persistence`: guarda y carga los datos de los servicios, manteniendo compatibilidad con los archivos JSON anteriores.
 
-Las clases se encuentran en `Models/` excepto el punto de entrada, que permanece en `Program.cs`. Los menús comparten las mismas instancias de préstamos y persistencia para mantener sincronizado el estado de la aplicación.
+Los modelos están en `Models/`, la lógica de negocio en `Services/` y las interfaces de consola en `ConsoleUI/`. `Program.cs` crea y comparte las mismas instancias de los servicios y la persistencia para mantener sincronizado el estado de la aplicación.
 
 ## Requisitos
 

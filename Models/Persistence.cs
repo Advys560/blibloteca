@@ -1,11 +1,24 @@
 using System.Text.Json;
+using Proyecto_Bliblotecta.Services;
 
 public class Persistence
 {
     private static readonly string CarpetaDatos = ObtenerCarpetaDatos();
     private static readonly string RutaArchivo = Path.Combine(CarpetaDatos, "biblioteca.json");
     private readonly JsonSerializerOptions _opcionesJson = new() { WriteIndented = true };
-    private Loans? _loans;
+    private readonly LibroService _libroService;
+    private readonly UsuarioService _usuarioService;
+    private readonly PrestamoService _prestamoService;
+
+    public Persistence(
+        LibroService libroService,
+        UsuarioService usuarioService,
+        PrestamoService prestamoService)
+    {
+        _libroService = libroService;
+        _usuarioService = usuarioService;
+        _prestamoService = prestamoService;
+    }
 
     public void MostrarMenu()
     {
@@ -35,7 +48,7 @@ public class Persistence
                     GuardarDatos();
                     break;
                 case "2":
-                    CargarDatos(ObtenerLoans());
+                    CargarDatos();
                     break;
                 case "3":
                     if (Confirmar("¿Está seguro de que desea vaciar todos los libros, usuarios y préstamos? (S/N): "))
@@ -62,16 +75,15 @@ public class Persistence
 
     public void GuardarDatos()
     {
-        Loans loans = ObtenerLoans();
-
         try
         {
             Directory.CreateDirectory(CarpetaDatos);
             DatosBiblioteca datos = new()
             {
-                Libros = CatalogoLibros.Libros.ToList(),
-                Usuarios = Users.Usuarios.ToList(),
-                Prestamos = loans.ObtenerTodosLosPrestamos()
+                Libros = _libroService.ObtenerTodos().Select(libro => libro.Titulo).ToList(),
+                LibrosCompletos = _libroService.ObtenerTodos(),
+                Usuarios = _usuarioService.ObtenerTodos(),
+                Prestamos = _prestamoService.ObtenerTodos()
                     .Select(prestamo => new PrestamoGuardado
                     {
                         Id = prestamo.Id,
@@ -97,10 +109,8 @@ public class Persistence
         }
     }
 
-    public void CargarDatos(Loans loans, bool mostrarMensaje = true)
+    public void CargarDatos(bool mostrarMensaje = true)
     {
-        _loans = loans;
-
         if (!File.Exists(RutaArchivo))
         {
             if (mostrarMensaje)
@@ -120,12 +130,32 @@ public class Persistence
                 throw new InvalidDataException("El archivo no contiene datos válidos.");
             }
 
-            List<string> libros = datos.Libros
+            List<string> titulosLibros = datos.Libros
                 ?? throw new InvalidDataException("El archivo no contiene una lista válida de libros.");
             List<Usuario> usuarios = datos.Usuarios
                 ?? throw new InvalidDataException("El archivo no contiene una lista válida de usuarios.");
             List<PrestamoGuardado> prestamosGuardados = datos.Prestamos ?? new List<PrestamoGuardado>();
-            ValidarDatos(libros, usuarios, prestamosGuardados);
+            List<Libro> libros = datos.LibrosCompletos
+                ?? titulosLibros
+                    .Select((titulo, indice) => new Libro(
+                        indice + 1,
+                        $"LEGACY-{indice + 1}",
+                        titulo,
+                        string.Empty,
+                        0))
+                    .ToList();
+
+            if (libros.Any(libro =>
+                    libro is null ||
+                    libro.Id <= 0 ||
+                    string.IsNullOrWhiteSpace(libro.Isbn) ||
+                    string.IsNullOrWhiteSpace(libro.Titulo)))
+            {
+                throw new InvalidDataException("La lista de libros contiene datos inválidos.");
+            }
+
+            titulosLibros = libros.Select(libro => libro.Titulo).ToList();
+            ValidarDatos(titulosLibros, usuarios, prestamosGuardados);
             Dictionary<int, Usuario> usuariosPorId = usuarios.ToDictionary(usuario => usuario.Id);
             List<Prestamo> prestamos = prestamosGuardados
                 .Select(prestamo => new Prestamo(
@@ -136,11 +166,9 @@ public class Persistence
                     prestamo.FechaDevolucion))
                 .ToList();
 
-            CatalogoLibros.Libros.Clear();
-            CatalogoLibros.Libros.AddRange(libros);
-            Users.Usuarios.Clear();
-            Users.Usuarios.AddRange(usuarios);
-            loans.ReemplazarPrestamos(prestamos);
+            _libroService.ReemplazarTodos(libros);
+            _usuarioService.ReemplazarTodos(usuarios);
+            _prestamoService.ReemplazarTodos(prestamos);
 
             if (mostrarMensaje)
             {
@@ -167,9 +195,9 @@ public class Persistence
 
     public void ReiniciarDatos()
     {
-        CatalogoLibros.Libros.Clear();
-        Users.Usuarios.Clear();
-        ObtenerLoans().ReemplazarPrestamos(Array.Empty<Prestamo>());
+        _libroService.ReemplazarTodos(Array.Empty<Libro>());
+        _usuarioService.ReemplazarTodos(Array.Empty<Usuario>());
+        _prestamoService.ReemplazarTodos(Array.Empty<Prestamo>());
         GuardarDatos();
 
         Console.WriteLine("Se vaciaron todos los libros, usuarios y préstamos.");
@@ -246,12 +274,6 @@ public class Persistence
             : Path.Combine(carpetaLocal, "ProyectoBiblioteca");
     }
 
-    private Loans ObtenerLoans()
-    {
-        return _loans ?? throw new InvalidOperationException(
-            "La persistencia debe inicializarse cargando los datos con la instancia de préstamos.");
-    }
-
     private sealed class DatosBiblioteca
     {
         public DatosBiblioteca()
@@ -259,6 +281,7 @@ public class Persistence
         }
 
         public List<string>? Libros { get; set; }
+        public List<Libro>? LibrosCompletos { get; set; }
         public List<Usuario>? Usuarios { get; set; }
         public List<PrestamoGuardado>? Prestamos { get; set; }
     }
