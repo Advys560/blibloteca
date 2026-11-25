@@ -1,3 +1,5 @@
+namespace Proyecto_Bliblotecta.Models;
+
 public sealed class Prestamo
 {
     public const int DuracionPredeterminadaDias = 14;

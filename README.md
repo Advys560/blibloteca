@@ -21,6 +21,7 @@ Este proyecto simula una pequeña biblioteca digital donde el usuario puede:
 - **Préstamos:** registro, consulta y devolución de libros.
 - **Búsqueda:** búsqueda de libros por nombre o por parte del título sin distinguir mayúsculas/minúsculas.
 - **Reportes:** listado de préstamos registrados con su estado.
+- **Demostración de servicios:** búsquedas y ordenamientos de libros, usuarios y préstamos; KPIs y comparación de `Libro[]` con `List<Libro>`.
 - **Persistencia:** carga al iniciar y guardado de libros, usuarios y préstamos usando JSON.
 - **Reinicio de datos:** vaciado de libros, usuarios y préstamos tras confirmación.
 - **Salida segura:** confirma antes de cerrar la aplicación.
@@ -30,14 +31,37 @@ Este proyecto simula una pequeña biblioteca digital donde el usuario puede:
 La aplicación sigue un enfoque de programación orientada a objetos (POO), separando responsabilidades en clases y métodos reutilizables:
 
 - `Program`: inicia la persistencia, carga los datos y abre la aplicación.
-- `Menu`: controla el menú principal y delega las acciones según la opción seleccionada.
-- `BooksMenu`, `UsersMenu` y `LoansMenu`: mantienen la interacción de consola en `ConsoleUI/`.
+- `Menu`, `BooksMenu`, `UsersMenu`, `LoansMenu` y `SearchAndReports`: mantienen la interacción de consola en `ConsoleUI/`.
 - `LibroService`, `UsuarioService` y `PrestamoService`: gestionan en memoria las entidades y reglas de negocio en `Services/`.
-- `Prestamo`: representa cada préstamo y su estado.
-- `SearchAndReports`: controla búsquedas y reportes.
-- `Persistence`: guarda y carga los datos de los servicios, manteniendo compatibilidad con los archivos JSON anteriores.
+- `Libro`, `Usuario`, `Prestamo` y `EstadoPrestamo`: definen las entidades y sus estados en `Models/`.
+- `Persistence`: guarda y carga los datos de los servicios en `Infrastructure/`, manteniendo compatibilidad con los archivos JSON anteriores.
 
-Los modelos están en `Models/`, la lógica de negocio en `Services/` y las interfaces de consola en `ConsoleUI/`. `Program.cs` crea y comparte las mismas instancias de los servicios y la persistencia para mantener sincronizado el estado de la aplicación.
+La estructura principal del proyecto es:
+
+```text
+Proyecto-Bliblotecta/
+├── ConsoleUI/
+│   ├── BooksMenu.cs
+│   ├── LoansMenu.cs
+│   ├── Menu.cs
+│   ├── SearchAndReports.cs
+│   └── UsersMenu.cs
+├── Infrastructure/
+│   └── Persistence.cs
+├── Models/
+│   ├── EstadoPrestamo.cs
+│   ├── Libro.cs
+│   ├── Prestamo.cs
+│   └── Usuario.cs
+├── Services/
+│   ├── LibroService.cs
+│   ├── PrestamoService.cs
+│   └── UsuarioService.cs
+├── Program.cs
+└── Proyecto-Bliblotecta.csproj
+```
+
+`Program.cs` construye una sola instancia de cada servicio, prepara datos de prueba, carga los datos guardados si existen y comparte esas instancias con los menús. Models contiene solo entidades; Services administra las colecciones y reglas de negocio; ConsoleUI gestiona la interacción, e Infrastructure la persistencia.
 
 ## Requisitos
 

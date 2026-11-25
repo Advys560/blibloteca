@@ -1,3 +1,5 @@
+namespace Proyecto_Bliblotecta.Models;
+
 /// <summary>
 /// Representa un libro registrado en la biblioteca.
 /// </summary>

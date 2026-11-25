@@ -1,5 +1,9 @@
+using Proyecto_Bliblotecta.Infrastructure;
+using Proyecto_Bliblotecta.Models;
 using Proyecto_Bliblotecta.ConsoleUI;
 using Proyecto_Bliblotecta.Services;
+
+namespace Proyecto_Bliblotecta.ConsoleUI;
 
 public class Menu
 {
@@ -18,7 +22,7 @@ public class Menu
         _books = new BooksMenu(libros, prestamos, persistence);
         _users = new UsersMenu(usuarios, persistence);
         _loans = new LoansMenu(prestamos, libros, usuarios, persistence);
-        _searchAndReports = new SearchAndReports(libros, prestamos);
+        _searchAndReports = new SearchAndReports(libros, usuarios, prestamos);
         _persistence = persistence;
     }
 

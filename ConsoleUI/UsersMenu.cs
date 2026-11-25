@@ -1,3 +1,5 @@
+using Proyecto_Bliblotecta.Infrastructure;
+using Proyecto_Bliblotecta.Models;
 using Proyecto_Bliblotecta.Services;
 
 namespace Proyecto_Bliblotecta.ConsoleUI;
